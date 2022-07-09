@@ -1,44 +1,45 @@
-# Chapter 2: Introducing Docker
+# 2장: 도커 소개
 
-All the instructions assumes you have Docker installed and configured on your machine.
+아래 명령어는 도커가 설치된 환경에서만 사용할 수 있다.
 
-## Code Samples
+## 코드 예제
 
-### Code Sample 1: Dockerfile
+### 예제 1: Dockerfile
 
-The [sample1](sample1) includes a project to build Docker image which contains the Python interpreter. You can build it with the following command.
+[sample1](sample1) 에는 파이썬 인터프리터가 포함된 도커 이미지를 빌드하는 프로젝트가 있다. 다음 명령으로 빌드할 수 있다.
 
     $ docker build -t ubuntu_with_python .
 
-### Code Sample 2: Complete Docker application
+### 예제 2: Complete Docker application
 
-The [sample2](sample2) includes a project to build Hello World Python Docker image. You can build and run it with the following commands.
+[sample2](sample2) 에는  Hello World Python 도커 이미지를 빌드하는 프로젝트가 있다. 다음 명령으로 빌드할 수 있다.
 
     $ docker build -t hello_world_python .
     $ docker run hello_world_python
     Hello World from Python!
 
-### Code Sample 3: Environment variables
+### 예제 3: Environment variables
 
-The [sample3](sample3) project presents the usage of environment variables with Docker image. You can build and run it with the following commands.
+[sample3](sample3) 은 도커 이미지와 함께 환경 변수의 사용법을 보여준다. 다음 명령으로 빌드할 수 있다.
 
     $ docker build -t hello_world_python_name .
     $ docker run -e NAME=Rafal hello_world_python_name
     Hello World from Rafal ! 
 
-## Exercise solutions
+## 연습 문제
 
-### Exercise 1: Run CouchDB Docker container
+### 연습 1: CouchDB를 도커 컨테이너로 실행하기
 
-You can start the CouchDB database with the following command.
+다음 명령으로 CouchDB 데이터베이스를 시작할 수 있다.
 
     $ docker run -p 5984:5984 couchdb
 
-Then, check that its web interface is available at: [http://localhost:5984/\_utils/](http://localhost:5984/_utils/).
+그리고, 아래 웹 주소에 접속 가능한지 확인한다.
+[http://localhost:5984/\_utils/](http://localhost:5984/_utils/).
 
-### Exercise 2: Create Docker image with REST service
+### 연습 2: REST 서비스로 도커 이미지 생성하기
 
-The [exercise2](exercise2) directory contains the source code for the Docker image with a REST web service. You can build and run it with the following commands.
+[exercise2](exercise2) 디렉토리에는 REST 웹서비스가 포함된 도커 이미지의 소스 코드가 포함되어 있다. 다음 명령으로 빌드할 수 있다.
 
     $ docker build -t hello-service .
     $ docker run -d -p 5000:5000 hello-service
