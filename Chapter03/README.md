@@ -33,7 +33,7 @@
 
 ## 연습 문제 해법
 
-### 연습 1: Build Jenkins master and agent Docker images
+### 연습 1: 젠킨스 마스터와 에이전트 도커 이미지 빌드하기
 
 [exercise1](exercise1) 디렉토리에는 젠킨스 마스터([exercise1/master](exercise1/master))와 젠킨스 에이전트([exercise1/agent](exercise1/agent)) 도커 이미지의 소스 코드가 포함되어 있다.
 
@@ -50,9 +50,9 @@
 도커 허브에서 `leszko/jenkins-agent-ruby` 레포지토리를 공개로 설정하고, 젠킨스 마스터에서 이 이미지를 에이전트로 설정한다.
 
 
-### 연습 2: Create a pipeline which creates and run Ruby script
+### 연습 2: 루비 스크립트를 생성 및 실행하는 파이프라인 생성하기
 
-Hello World from Ruby를 출력하는 루비 스크립트 생성 및 실행 파일은 다음과 같다.
+Hello World from Ruby를 출력하는 루비 스크립트 생성 및 실행 스크립트는 다음과 같다.
 
 ```
 pipeline {
