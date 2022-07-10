@@ -1,21 +1,21 @@
-# Chapter 7: Configuration Management with Ansible
+# Chapter 7: 앤서블로 하는 구성 관리
 
-All the instructions assumes that you have:
-* Ansible tool installed
-* Two Ubuntu machines with SSH configured (you should be able to `ssh` into each machine without password)
-* Ansible inventory file created (`/etc/ansible/hosts`) pointing to your remote machines
+7장의 예제를 사용하려면 다음 조건이 필요하다:
+* 앤서블이 설치되어 있어야 한다.
+* SSH가 구성된 두 대의 우분투 머신 (각 머신에 비밀번호없이 'ssh'로 접속할 수 있어야 한다)
+* 원격 머신을 가리키는 앤서블 인벤토리 파일(`/etc/ansible/hosts`)
 
-Sample Ansible inventory file:
+앤서블 인벤토리 파일 예제:
 
 	[webservers]
 	web1 ansible_host=<machine-ip-1> ansible_user=<machine-user-1>
 	web2 ansible_host=<machine-ip-2> ansible_user=<machine-user-2>
 
-## Code Samples
+## 코드 예제
 
-### Code Sample 1: Ad hoc commands
+### 예제 1: 애드혹 명령
 
-To check that your inventory is correct, run the Ansible ad hoc `ping` command.
+인벤토리가 올바른지 확인하려면, 앤서블 애드혹 `ping` 명령을 실핸한다.
 
 	$ ansible all -m ping
 	web1 | SUCCESS => {
@@ -33,133 +33,86 @@ To check that your inventory is correct, run the Ansible ad hoc `ping` command.
 	    "ping": "pong"
 	}
 
-### Code Sample 2: Playbooks
+### 예제 2: 플레이북
 
-The [sample2](sample2) includes a Playbook to install and run `apache2` on the `web1` host.
+[sample2](sample2)에는 'web1' 호스트에 'apache2'를 설치하고 실행할 수 있는 플레이북이 있다.
 
-You can execute it using the following command.
+다음 명령으로 실행한다.
 
 	$ ansible-playbook playbook.yml
 
-### Code Sample 3: Handlers
+### 예제 3: 핸들러
 
-The [sample3](sample3) includes a Playbook which, apart from installing and running `apache2`, copies the local `apache2` configuration and restarts the server only if the configuration has changed.
+[sample3](sample3)에는 'apache2'를 설치하고 실행하는 것과 별도로, 로컬 'apache2' 구성을 복사하고, 구성이 변경된 경우에만 서버를 재시작하는 플레이북이 있다.
 
-To create the configuration and start the playbook, run the following commands.
+구성을 생성하고 플레이북을 실행하려면 다음 명령을 실행한다.
 
 	$ touch foo.conf
 	$ ansible-playbook playbook.yml
 
-Note that if you run `ansible-playbook` mutliple times, nothing changes. Now, if you create a new configuration and start the Playbook again, you should see that the `apache2` server is restarted.
+참고로 `ansible-playbook`을 여러 번 실행해도, 아무것도 변경되지 않는다. 이제, 새 구성을 생성하고 플레이북을 다시 실행하면 'apache2' 서버가 재시작하는 것을 볼 수 있다.
 
 	$ echo "something" > foo.conf
 	$ ansible-playbook playbook.yml
 
-### Code Sample 4: Variables
+### 예제 4: 변수
 
-The [sample4](sample4) includes a Playbook presenting the use of variables.
+[sample4](sample4)에는 변수 사용을 보여주는 플레이북이 있다.
 
-Execute the following command to see the result.
+결과를 보려면 다음 명령을 실행한다.
 
 	$ ansible-playbook playbook.yml
 
-### Code Sample 5: Deployment with Ansible
+### 예제 5: 앤서블로 배포하기
 
-The [sample5](sample5) includes a Playbook to start Hazelcast server on `web1` and the Calculator service (which uses Hazelcast) on `web2`.
+[sample5](sample5)에는 'web1'의 Hazelcast 서버와 (Hazelcast를 사용하는) 'web2'의 계산기 서비스를 시작하는 플레이북이 있다.
 
-To run the playbook, you need first to modify `src/main/java/com/leszko/calculator/CalculatorApplication.java` and change `<machine-ip-1>` to your `web1` machine IP address. Then, you can build the project and apply the Ansible Playbook.
+플레이북을 실행하려면, 먼저 `src/main/java/com/leszko/calculator/CalculatorApplication.java`를 수정하고,  `<machine-ip-1>`를 사용자의 `web1` 머신 IP 주소로 변경한다.그런 다음, 프로젝트를 빌드하고 앤서블 플레이북을 적용한다.
 
 	$ ./gradlew build
 	$ ansible-playbook playbook.yml
 
-In result, you deployed two dependent applications. You can test it by running the following command.
+결과적으로, 두 개의 독립 애플리케이션을 배포했다. 다음 명령으로 이를 테스트할 수 있다.
 
 	$ curl http://<machine-ip-2>:8080/sum?a=1\&b=2
 	3
 
-### Code Sample 6: Ansible Docker playbook
+### 예제 6: 앤서블 도커 플레이북
 
-The [sample6](sample6) includes two playbooks:
- * `install-docker-playbook.yml`: playbook which installs Docker Community Edition on an Ubuntu 20.04 server
- * `hazelcast-playbook.yml`: playbook which starts Hazelcast Docker container on a server which has Docker Daemon running
+[sample6](sample6)에는 2개의 플레이북이 있다:
+ * `install-docker-playbook.yml`: 우분투 20.04 서버에 도커 커뮤니티 에디션을 설치하는 플레이북
+ * `hazelcast-playbook.yml`: 도커 데몬이 실행 중인 서버에서 Hazelcast 도커 컨테이너를 시작하는 플레이북
 
- To install Docker Daemon on a server, run the following command.
+ 서버에서 도커 데몬을 설치하려면, 다음 명령을 실행한다.
 
 	$ ansible-playbook install-docker-playbook.yml
 
-If the command fails at some point, re-run it.
+만약 명령이 실패하면, 다시 실행한다.
 
-Then, to start Hazelcast container, run the following command.
+그런 다음, Hazelcast 컨테이너를 시작하기 위해서, 다음 명령을 실행한다.
 
 	$ ansible-playbook hazelcast-playbook.yml
 
-### Code Sample 7: Using Terraform configuration
 
-The [sample7](sample7) includes a Terraform configuration to provision an AWS EC2 Instance.
+## 연습 문제 해법
 
-To configure AWS credentials, execute the following command.
+### 예제 1: 서버 인프라를 생성하고 이를 앤서블로 관리한다.
 
-	$ aws configure
+버추얼박스나 클라우드 서비스(AWS, GCP, or Azure), 또는 베어메탈 서버를 사용할 수 있다. SSH 공개를 `authorized_keys`로 구성한다. 그런 다음, 각 서버에 파이썬을 설치한다. 마지막으로, 인벤토리 파일(`/etc/ansible/hosts`)에 서버 IP와 사용자 이름을 추가한다.
 
-Execute the following command to download all required Terraform providers.
-
-	$ terraform init
-
-Then, check the planned infrastructure changes.
-
-	$ terraform plan
-
-Finally, make the infrastructure changes with the following command.
-
-	$ terraform apply
-
-You can clean up the created resources with the following command.
-
-	$ terraform destroy
-
-## Exercise solutions
-
-### Exercise 1: Create the server infrastructure and use Ansible to manage it
-
-You can use VirtualBox, one of Cloud providers (AWS, GCP, or Azure), or a bare-metal server. Configure your SSH public key into `authorized_keys`. Then, install Python on each of the servers. Finally, put the servers IPs and user names into your inventory file (`/etc/ansible/hosts`).
-
-With such configuration you should be able to `ping` all the servers.
+구성이 완료되면 모든 서버에 다음과 같이 `ping`을 할 수 있다.
 
 	$ ansible all -m ping
 
-### Exercise 2: Deploy a Python-based "hello world" web service using Ansible
+### 예제 2: 앤서블로 파이썬 기반 "hello world" 웹 서비스를 배포한다.
 
-The [exercise2](exercise2) directory contains the source code for the hello world application and the Ansible playbook to deploy it.
+[exercise2](exercise2) 디렉토리에는 hello world 애플리케이션의 소스 코드와 이를 배포하는 앤서블 플레이북이 있다.
 
-To install Hello World service on the `web1` server, run the following command.
+Hello World 서비스를 `web1` 서버에 설치하려면, 다음 명령을 실행한다.
 
 	$ ansible-playbook playbook.yml
 
-After that you should be able to call the Hello World service.
+그 후에 Hello World 서비스를 호출할 수 있다.
 
 	$ curl http://<web1-ip>:5000/hello
 	Hello World!
-
-### Exercise 3: Provision GCP VM Instance with Terraform
-
-The [exercise3](exercise3) includes a Terraform configuration to provision a GCP VM Instance.
-
-To configure GCP credentials execute the following command.
-
-	$ gcloud init
-
-Create GCP Credentials as described [here](https://console.cloud.google.com/iam-admin/serviceaccounts) and export them into an env variable called `GOOGLE_APPLICATION_CREDENTIALS`.
-
-	$ export GOOGLE_APPLICATION_CREDENTIALS=<path-to-your-credentials>
-
-Fill `<your-gcp-project>` in the `main.tf` file. Then, execute `terraform plan` to check the expected changes, and finally apply the Terraform configuration.
-
-	$ terraform apply
-
-Verify that the VM Instance is created with the following command.
-
-	$ gcloud compute instances list
-
-Clean up the infrastructure.
-
-	$ terraform destroy
